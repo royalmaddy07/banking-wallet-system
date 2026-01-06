@@ -117,6 +117,95 @@
             background-color: #f4f7f6;
             color: #3498db;
         }
+
+        /* Footer Layout */
+        .main-footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 40px 0 20px 0;
+            margin-top: 60px;
+            color: #64748b;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 50px;
+        }
+
+        /* Branding Section */
+        .footer-brand h4 {
+            color: var(--primary-navy);
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .footer-brand p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        /* Link Columns */
+        .footer-links h5 {
+            color: var(--primary-navy);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Bottom Bar */
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 40px auto 0 auto;
+            padding: 20px 40px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+        }
     </style>
 
     <header class="header-brand">
@@ -132,8 +221,8 @@
             <ul class="nav-bar">
                 <div class="nav-links">
                     <li><a href="{% url 'home' %}">HOME</a></li>
-                    <li><a href="{% url 'home' %}">TRANSACTIONS</a></li>
-                    <li><a href="{% url 'home' %}">STATEMENTS</a></li>
+                    <li><a href="{% url 'transfer' %}">TRANSACTIONS</a></li>
+                    <li><a href="{% url 'statements' %}">STATEMENTS</a></li>
                     <li><a href="{% url 'new_account' %}">NEW ACCOUNT</a></li>
                 </div>
                 <li><a href="{% url 'logout' %}" style="color: #e74c3c; border: 1px solid #fadbd8;">LOGOUT</a></li>
@@ -144,5 +233,44 @@
     {% block content %}
     {% endblock %}
 
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h4>BankEngine<span style="color: var(--accent-gold);">_</span></h4>
+                <p>A high-performance core banking ledger designed for ACID-compliant financial operations and real-time liquidity management.</p>
+            </div>
+
+            <div class="footer-links">
+                <h5>Resources</h5>
+                <ul>
+                    <li><a href="{% url 'home' %}">Dashboard</a></li>
+                    <li><a href="{% url 'new_account' %}">Open Account</a></li>
+                    <li><a href="{% url 'transfer' %}">Fund Transfer</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h5>Support</h5>
+                <ul>
+                    <li><a href="#">Security Protocols</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>
+                &copy; 2026 BankEngine Systems v1.0.0. All rights reserved.
+            </div>
+            
+            <div class="system-status">
+                <span class="status-indicator"></span>
+                <span>CORE ENGINE: <strong>OPERATIONAL</strong></span>
+                <span style="margin-left: 20px; opacity: 0.5;">|</span>
+                <span style="margin-left: 20px;">SQL_DRIVER: <strong>CONNECTED</strong></span>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

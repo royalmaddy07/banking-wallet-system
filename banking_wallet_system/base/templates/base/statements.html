@@ -1,0 +1,176 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    .statements-wrapper {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* 1. Filter Section */
+    .ledger-filter-card {
+        background: white;
+        padding: 25px 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-left: 5px solid var(--accent-gold);
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .filter-group label {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--primary-navy);
+        text-transform: uppercase;
+    }
+
+    .filter-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 2px solid #f1f5f9;
+        background: #f8fafc;
+        font-family: inherit;
+        color: var(--primary-navy);
+        font-weight: 600;
+    }
+
+    /* 2. The Ledger Table */
+    .ledger-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .ledger-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .ledger-table thead {
+        background: var(--primary-navy);
+        color: white;
+    }
+
+    .ledger-table th {
+        padding: 20px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .ledger-table td {
+        padding: 20px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+        color: #1e293b;
+    }
+
+    /* 3. Transaction Types Styling */
+    .type-pill {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 800;
+    }
+
+    .type-credit { background: #dcfce7; color: #166534; }
+    .type-debit { background: #fee2e2; color: #991b1b; }
+
+    .amt-credit { color: #10b981; font-weight: 700; }
+    .amt-debit { color: #ef4444; font-weight: 700; }
+
+    .timestamp {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+
+    .btn-print {
+        background: var(--primary-navy);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-print:hover { opacity: 0.9; }
+</style>
+
+<div class="statements-wrapper">
+    <h2 style="color: var(--primary-navy); margin-bottom: 10px;">Account Statements</h2>
+    <p style="color: #64748b; margin-bottom: 30px;">Review chronological ledger entries for your provisioned accounts.</p>
+
+    <div class="ledger-filter-card">
+        <form method="GET" class="filter-group">
+            <label>Select Ledger</label>
+            <select name="account_id" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Accounts</option>
+                {% for acc in user_accounts %}
+                <option value="{{ acc.accountid }}" {% if request.GET.account_id == acc.accountid|stringformat:"s" %}selected{% endif %}>
+                    {{ acc.accounttype }} - {{ acc.accountnumber }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+        <button class="btn-print" onclick="window.print()">Download PDF</button>
+    </div>
+
+    <div class="ledger-container">
+        <table class="ledger-table">
+            <thead>
+                <tr>
+                    <th>Date / Time</th>
+                    <th>Reference ID</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th style="text-align: right;">Amount (INR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td class="timestamp">{{ tx.created_at|date:"d M Y | H:i" }}</td>
+                    <td style="font-family: 'JetBrains Mono'; font-size: 0.75rem;">#TXN-{{ tx.id|stringformat:"06d" }}</td>
+                    <td>
+                        <strong>{{ tx.description }}</strong><br>
+                        <small style="color: #94a3b8;">Ref: {{ tx.other_party }}</small>
+                    </td>
+                    <td>
+                        {% if tx.type == 'CREDIT' %}
+                            <span class="type-pill type-credit">CREDIT</span>
+                        {% else %}
+                            <span class="type-pill type-debit">DEBIT</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;" class="{% if tx.type == 'CREDIT' %}amt-credit{% else %}amt-debit{% endif %}">
+                        {% if tx.type == 'CREDIT' %}+{% else %}-{% endif %} ₹{{ tx.amount }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 50px; color: #94a3b8;">
+                        No transaction records found for the selected period.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -11,4 +11,10 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
 
     path('new_account/', views.new_account, name="new_account"),
+
+    path('transfer/', views.transfer, name='transfer'),
+
+    path('statements/', views.statements, name='statements'),
+
+    path('deactivate_account/<int:pk>', views.deactivate_account, name='deactivate_account')
 ]

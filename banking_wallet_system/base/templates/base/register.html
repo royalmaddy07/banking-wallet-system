@@ -2,20 +2,21 @@
 
 {% block content %}
 <style>
-    body {
-        font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        min-height: 100vh;
-        margin: 0;
+    /* Use a wrapper instead of styling the body directly */
+    .auth-page-container {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: calc(100vh - 200px); /* Adjust based on your header/footer height */
     }
 
     .register-header {
         text-align: center;
-        margin-top: 50px;
         max-width: 600px;
+        margin-bottom: 30px;
     }
 
     .register-header h2 {
@@ -31,61 +32,39 @@
         font-size: 0.9rem;
     }
 
-    .register-container {
-        margin-top: 30px;
-        width: 100%;
-        max-width: 600px;
-        padding-bottom: 50px;
-    }
-
     .register-form-card {
         background: #ffffff;
         padding: 40px;
         border-radius: 16px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         border-top: 6px solid #1a365d;
+        width: 100%;
+        max-width: 600px; /* Limits the form width */
+        box-sizing: border-box;
     }
 
+    /* Rest of your existing CSS (form-grid, input-group, etc.) */
     .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
-
-    .full-width {
-        grid-column: span 2;
-    }
-
-    .input-group {
-        margin-bottom: 15px;
-    }
-
-    .register-form-card label {
+    .full-width { grid-column: span 2; }
+    .input-group label {
         font-size: 0.75rem;
         font-weight: 700;
         color: #64748b;
-        letter-spacing: 0.5px;
         margin-bottom: 8px;
         display: block;
     }
-
     .register-form-card input {
         width: 100%;
         padding: 12px;
         border: 2px solid #f1f5f9;
         border-radius: 8px;
         background: #f8fafc;
-        transition: all 0.3s ease;
         box-sizing: border-box;
     }
-
-    .register-form-card input:focus {
-        border-color: #3182ce;
-        background: #fff;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
-    }
-
     .btn-submit {
         grid-column: span 2;
         margin-top: 20px;
@@ -98,67 +77,34 @@
         font-weight: 700;
         text-transform: uppercase;
         cursor: pointer;
-        transition: transform 0.2s, background 0.3s;
     }
-
-    .btn-submit:hover {
-        background: #2c5282;
-        transform: translateY(-1px);
-    }
-
     .auth-footer {
         margin-top: 25px;
         text-align: center;
         font-size: 0.9rem;
         color: #64748b;
     }
-
-    .login-link {
-        color: #3182ce;
-        text-decoration: none;
-        font-weight: 700;
-        margin-left: 5px;
-    }
-
-    .error-alert {
-        background-color: #fff5f5;
-        border-left: 4px solid #f56565;
-        color: #c53030;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .error-alert::before {
-        content: "⚠️";
-        margin-right: 10px;
-    }
-
+    .login-link { color: #3182ce; text-decoration: none; font-weight: 700; }
+    
     @media (max-width: 600px) {
         .form-grid { grid-template-columns: 1fr; }
         .btn-submit, .full-width { grid-column: span 1; }
     }
 </style>
 
-<div class="register-header">
-    <h2>Create System Identity</h2>
-    <p>Please provide your credentials to register within the Banking Engine.</p>
-</div>
-
-{% if error != None %}
-    <div class="error-alert">
-        <p>{{error}}</p>
+<div class="auth-page-container">
+    <div class="register-header">
+        <h2>Create System Identity</h2>
+        <p>Please provide your credentials to register within the Banking Engine.</p>
     </div>
-{% endif %}
 
-<div class="register-container">
+    {% if error != None %}
+        <div class="error-alert">
+            <p>{{error}}</p>
+        </div>
+    {% endif %}
+
     <div class="register-form-card">
-        
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
             <div class="form-grid">
@@ -174,14 +120,7 @@
 
                 <div class="input-group full-width">
                     <label for="phone">CONTACT NUMBER (10 DIGITS)</label>
-                    <input 
-                        type="tel" 
-                        name="phone" 
-                        id="phone" 
-                        placeholder="0123456789" 
-                        pattern="[0-9]{10}" 
-                        title="Please enter a 10-digit phone number without spaces or dashes"
-                        required>
+                    <input type="tel" name="phone" id="phone" placeholder="0123456789" pattern="[0-9]{10}" required>
                 </div>
 
                 <div class="input-group">

@@ -118,3 +118,14 @@ def new_account(request):
             messages.error(request, f"Provising error : {str(e)}")
 
     return render(request, 'base/new_account.html')
+
+# view for performing a transaction ->
+def transfer(request):
+    return render(request, 'base/transfer.html')
+
+# view for retrieving bank statements ->
+def statements(request):
+    return render(request, 'base/statements.html')
+
+def deactivate_account(request, pk):
+    return render(request, 'base/deactivate_account.html')

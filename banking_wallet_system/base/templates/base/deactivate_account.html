@@ -1,0 +1,168 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<style>
+    /* Reuse shared provisioning layout but with danger accents */
+    .action-page-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 60px 20px;
+        min-height: 80vh;
+    }
+
+    .provision-card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 550px;
+        padding: 0;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1);
+        border-top: 8px solid #ef4444; /* Danger Red */
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-head { padding: 40px 45px 20px 45px; }
+    .card-body { padding: 0 45px 40px 45px; }
+
+    .card-head h2 {
+        color: #991b1b;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -1px;
+    }
+
+    /* Account Details Box */
+    .account-details-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .detail-item label {
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #94a3b8;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .detail-item span {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        color: var(--primary-navy);
+        font-size: 0.95rem;
+    }
+
+    /* Verification Section */
+    .verification-section {
+        margin-top: 25px;
+        padding: 30px;
+        background: #fff1f2;
+        border: 2px solid #fecdd3;
+        border-radius: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #991b1b;
+        margin-bottom: 12px;
+    }
+
+    .verification-section input[type="password"] {
+        width: 100%;
+        padding: 16px;
+        border: 2px solid #fecdd3;
+        border-radius: 12px;
+        background: white;
+        color: #991b1b;
+        box-sizing: border-box;
+    }
+
+    .btn-danger-execute {
+        width: 100%;
+        background: #ef4444;
+        color: white;
+        padding: 18px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 20px;
+    }
+
+    .btn-danger-execute:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+    }
+</style>
+
+<div class="action-page-wrapper">
+    <div class="provision-card">
+        <div class="card-head">
+            <div class="auth-badge" style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; display: inline-block; margin-bottom: 15px;">
+                ⚠️ TERMINATION PROTOCOL
+            </div>
+            <h2>Deactivate Ledger</h2>
+            <p class="subtitle" style="color: #64748b; font-size: 0.9rem; margin-top: 10px;">
+                You are about to freeze this account. Once deactivated, it will no longer be visible in the active transfer list.
+            </p>
+        </div>
+
+        <div class="card-body">
+            <div class="account-details-box">
+                <div class="detail-item">
+                    <label>Account Type</label>
+                    <span>{{ account.accounttype }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Balance (INR)</label>
+                    <span style="color: #10b981;">₹{{ account.balance }}</span>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <label>Account Number</label>
+                    <span>{{ account.accountnumber }}</span>
+                </div>
+            </div>
+
+            
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="verification-section">
+                    <h4 style="color: #991b1b; margin: 0 0 10px 0; font-weight: 800;">Final Authorization</h4>
+                    <p style="font-size: 0.8rem; color: #b91c1c; margin-bottom: 20px; line-height: 1.5;">
+                        To confirm this permanent deactivation, please enter your password. This action will be logged with your IP address for security auditing.
+                    </p>
+
+                    <div class="form-group">
+                        <label>Identity Confirmation (Password)</label>
+                        <input type="password" name="verify_password" required placeholder="••••••••">
+                    </div>
+
+                    <button type="submit" class="btn-danger-execute">
+                        Sign & Deactivate Account
+                    </button>
+                    
+                    <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 20px; font-size: 0.85rem; color: #64748b; text-decoration: none; font-weight: 600;">
+                        ⟵ Cancel and Return
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

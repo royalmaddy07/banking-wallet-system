@@ -2,19 +2,67 @@
 
 {% block content %}
     <style>
+        /* ... existing styles ... */
         .dashboard-container {
             width: 100%;
             box-sizing: border-box;
             padding: 30px 40px; 
         }
 
+        /* NEW: Styles for Account Management */
+        .card-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-deactivate {
+            font-size: 0.65rem;
+            color: #ffb3b3;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border: 1px solid rgba(255, 179, 179, 0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn-deactivate:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        /* Visual state for Inactive Accounts */
+        .account-card.inactive {
+            filter: grayscale(1) opacity(0.8);
+            background: #475569;
+        }
+
+        .closed-badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: #ef4444;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        /* ... remaining existing styles ... */
         .profile-card {
             background: white;
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border-top: 6px solid #1a365d;
-            
             display: flex; 
             justify-content: space-between;
             flex-wrap: wrap; 
@@ -246,18 +294,34 @@
             <h3>Your Managed Assets</h3>
             <div class="action-bar">
                 <a href="{% url 'new_account' %}" class="btn-action">+ New Account</a>
-                <a href="{% url 'home' %}" class="btn-action">Transfer Funds</a>
+                <a href="{% url 'transfer' %}" class="btn-action">Transfer Funds</a>
             </div>
         </div>
 
         <div class="accounts-grid">
             {% for acc in accounts %}
-            <div class="account-card">
+            <div class="account-card {% if acc.status == 'INACTIVE' %}inactive{% endif %}">
                 <span class="card-label">{{ acc.accounttype }}</span>
+                
+                {% if acc.status == 'INACTIVE' %}
+                    <div class="closed-badge">Closed</div>
+                {% endif %}
+
                 <div class="card-no">**** **** {{ acc.accountnumber|slice:"-4:" }}</div>
+                
                 <div class="balance-info">
                     <div style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase;">Available Balance</div>
                     <div class="balance-amt">₹{{ acc.balance }}</div>
+                </div>
+
+                <div class="card-footer">
+                    {% if acc.status == 'ACTIVE' %}
+                        <a href="{% url 'deactivate_account' acc.accountid %}" class="btn-deactivate">
+                            Deactivate Ledger
+                        </a>
+                    {% else %}
+                        <span style="font-size: 0.65rem; color: #cbd5e1; font-weight: 800;">PERMANENTLY CLOSED</span>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}
@@ -276,8 +340,6 @@
         </div>
 
     </div>
-
-
 
 <script>
     setTimeout(function() {

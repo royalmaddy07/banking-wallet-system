@@ -2,83 +2,77 @@
 
 {% block content %}
 <style>
-    /* 1. Page Layout */
     .action-page-wrapper {
         display: flex;
         justify-content: center;
         align-items: flex-start;
-        padding-top: 40px;
-        min-height: 60vh;
+        padding: 60px 20px;
+        min-height: 80vh;
     }
 
-    /* 2. Enhanced Form Card */
     .provision-card {
         background: #ffffff;
         width: 100%;
         max-width: 550px;
-        padding: 45px;
-        border-radius: 16px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-        border-top: 6px solid var(--accent-gold); /* Using your gold variable */
+        padding: 0; /* Changed to handle internal spacing via sections */
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-top: 8px solid var(--accent-gold);
         position: relative;
         overflow: hidden;
     }
 
-    /* Subtle "Watermark" for branding */
-    .provision-card::after {
-        content: "LEDGER_ENTRY";
-        position: absolute;
-        top: 20px;
-        right: -20px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.6rem;
-        color: #f1f5f9;
-        transform: rotate(45deg);
-        font-weight: 800;
+    /* Card Header */
+    .card-head {
+        padding: 40px 45px 20px 45px;
     }
 
-    .provision-card h2 {
+    .card-head h2 {
         color: var(--primary-navy);
         font-weight: 800;
-        margin-top: 0;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
+        margin: 0;
+        letter-spacing: -1px;
+        font-size: 1.8rem;
     }
 
-    .provision-card .subtitle {
+    .card-head .subtitle {
         color: #64748b;
-        font-size: 0.85rem;
-        margin-bottom: 35px;
-        line-height: 1.5;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        line-height: 1.6;
     }
 
-    /* 3. Input Styling */
+    /* Form Body */
+    .card-body {
+        padding: 0 45px 40px 45px;
+    }
+
     .form-group {
         margin-bottom: 25px;
     }
 
     .form-group label {
         display: block;
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         font-weight: 800;
         color: #94a3b8;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
+        letter-spacing: 1.2px;
+        margin-bottom: 12px;
     }
 
     .provision-card select, 
-    .provision-card input {
+    .provision-card input[type="number"],
+    .provision-card input[type="password"] {
         width: 100%;
-        padding: 14px 16px;
+        padding: 16px;
         font-size: 1rem;
         border: 2px solid #f1f5f9;
-        border-radius: 8px;
+        border-radius: 12px;
         background-color: #f8fafc;
         color: var(--primary-navy);
-        font-family: inherit;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-sizing: border-box;
-        transition: all 0.3s ease;
     }
 
     .provision-card select:focus, 
@@ -86,69 +80,138 @@
         outline: none;
         border-color: var(--accent-gold);
         background-color: #fff;
-        box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+        box-shadow: 0 8px 20px rgba(197, 160, 89, 0.15);
     }
 
-    /* 4. Action Button */
+    /* High-Security Verification Section */
+    .verification-section {
+        margin-top: 35px;
+        padding: 30px;
+        background: #f1f5f9; /* Slightly darker to differentiate */
+        border-radius: 16px;
+        border: 2px solid #e2e8f0;
+    }
+
+    .auth-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: var(--primary-navy);
+        color: #fff;
+        border-radius: 6px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
     .btn-provision {
         width: 100%;
         background-color: var(--primary-navy);
         color: white;
-        padding: 16px;
+        padding: 18px;
         border: none;
-        border-radius: 8px;
-        font-size: 0.9rem;
+        border-radius: 12px;
+        font-size: 1rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-top: 10px;
+        box-shadow: 0 10px 20px rgba(26, 54, 93, 0.2);
     }
 
     .btn-provision:hover {
         background-color: #2c5282;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(26, 54, 93, 0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(26, 54, 93, 0.3);
     }
 
-    .btn-provision:active {
-        transform: translateY(0);
+    /* Custom Checkbox Styling */
+    .custom-check {
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #475569;
+        line-height: 1.4;
     }
 
-    /* Icon for inputs */
-    .input-hint {
-        font-size: 0.7rem;
-        color: #94a3b8;
-        margin-top: 6px;
-        font-style: italic;
+    .custom-check input {
+        width: 18px;
+        height: 18px;
+        margin-top: 2px;
+        accent-color: var(--primary-navy);
     }
 </style>
 
+
+
 <div class="action-page-wrapper">
     <div class="provision-card">
-        <h2>Initialize New Account</h2>
-        <p class="subtitle">Deploy a new financial product to the BankEngine ledger. All accounts are subject to ACID integrity checks.</p>
+        <div class="card-head">
+            <div class="auth-badge">🛡️ SECURE PROVISIONING</div>
+            <h2>Open New Ledger</h2>
+            <p class="subtitle">Assign a new financial instrument to your profile. This action requires identity re-authentication.</p>
+        </div>
         
-        <form method="POST" action="{% url 'new_account' %}">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="account_type">Account Configuration</label>
-                <select name="account_type" id="account_type">
-                    <option value="SAVINGS">Savings</option>
-                    <option value="CURRENT">Current</option>
-                    <option value="INVESTMENT">Investment</option>
-                </select>
-            </div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'new_account' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="account_type">Ledger Configuration</label>
+                    <select name="account_type" id="account_type" required>
+                        <option value="SAVINGS">Savings</option>
+                        <option value="CURRENT">Current</option>
+                        <option value="INVESTMENT">Investment</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="initial_balance">Initial Liquidity Provision (INR)</label>
-                <input type="number" name="initial_balance" id="initial_balance" value="0.00" step="0.01" min="0">
-            </div>
+                <div class="form-group">
+                    <label for="initial_balance">Initial Liquidity (INR)</label>
+                    <input type="number" name="initial_balance" id="initial_balance" value="0.00" step="0.01" min="0" required>
+                </div>
 
-            <button type="submit" class="btn-provision">Deploy New Account</button>
-        </form>
+                <div class="verification-section">
+                    <h4 style="color: var(--primary-navy); margin: 0 0 10px 0; font-weight: 800;">Identity Verification</h4>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 20px;">
+                        Enter your primary account password to authorize this ledger deployment.
+                    </p>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="verify_password" placeholder="Enter password" required>
+                    </div>
+
+                    <label class="custom-check">
+                        <input type="checkbox" id="confirm_check" required>
+                        <span>
+                            I authorize the creation of this <strong><span id="display_type">SAVINGS</span> ACCOUNT</strong> and agree to the BankEngine ledger protocols.
+                        </span>
+                    </label>
+
+                    <button type="submit" class="btn-provision" style="margin-top: 25px;">
+                        Authorize & Open
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    // Real-time label update for the confirmation checkbox
+    const selectElement = document.getElementById('account_type');
+    const displaySpan = document.getElementById('display_type');
+
+    selectElement.addEventListener('change', function() {
+        // Convert 'SAVINGS' to 'SAVINGS ACCOUNT' etc.
+        const selectedText = this.options[this.selectedIndex].text.split('(')[0].trim().toUpperCase();
+        displaySpan.innerText = selectedText;
+    });
+</script>
+
 {% endblock %}
