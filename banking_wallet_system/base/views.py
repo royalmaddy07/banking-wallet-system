@@ -97,7 +97,7 @@ def new_account(request):
         initial_balance = request.POST.get('initial_balance')
 
         if not request.user.check_password(verify_password):
-            messages.error(request, "incorrect Password entered")
+            messages.error(request, "Incorrect Password!")
             return render(request, 'base/new_account.html')
 
         while True :
@@ -132,5 +132,17 @@ def transfer(request):
 def statements(request):
     return render(request, 'base/statements.html')
 
+# view logic for deactivating a ledger ->
 def deactivate_account(request, pk):
-    return render(request, 'base/deactivate_account.html')
+    account = Accounts.objects.get(accountid = pk)
+    context = {
+        'account' : account
+    }
+    if request.method == "POST" :
+        verify_password = request.POST.get('verify_password')
+        if not request.user.check_password(verify_password):
+            messages.error(request, "Incorrect Password!")
+            return render(request, 'base/deactivate_account.html', context)
+
+
+    return render(request, 'base/deactivate_account.html', context)

@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-    /* Reuse shared provisioning layout but with danger accents */
     .action-page-wrapper {
         display: flex;
         justify-content: center;
@@ -18,7 +17,7 @@
         padding: 0;
         border-radius: 20px;
         box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1);
-        border-top: 8px solid #ef4444; /* Danger Red */
+        border-top: 8px solid #ef4444; 
         position: relative;
         overflow: hidden;
     }
@@ -61,13 +60,25 @@
         font-size: 0.95rem;
     }
 
-    /* Verification Section */
-    .verification-section {
+    /* Condition Sections */
+    .status-container {
         margin-top: 25px;
         padding: 30px;
-        background: #fff1f2;
-        border: 2px solid #fecdd3;
         border-radius: 16px;
+        border: 2px solid;
+    }
+
+    /* Case: Success/Ready */
+    .ready-state {
+        background: #fff1f2;
+        border-color: #fecdd3;
+    }
+
+    /* Case: Blocked */
+    .blocked-state {
+        background: #fffbeb;
+        border-color: #fef3c7;
+        text-align: center;
     }
 
     .form-group label {
@@ -78,7 +89,7 @@
         margin-bottom: 12px;
     }
 
-    .verification-section input[type="password"] {
+    .status-container input[type="password"] {
         width: 100%;
         padding: 16px;
         border: 2px solid #fecdd3;
@@ -86,12 +97,11 @@
         background: white;
         color: #991b1b;
         box-sizing: border-box;
+        font-size: 1rem;
     }
 
-    .btn-danger-execute {
+    .btn-action-main {
         width: 100%;
-        background: #ef4444;
-        color: white;
         padding: 18px;
         border: none;
         border-radius: 12px;
@@ -101,12 +111,33 @@
         cursor: pointer;
         transition: 0.3s;
         margin-top: 20px;
+        font-size: 0.9rem;
     }
 
-    .btn-danger-execute:hover {
+    .btn-deactivate {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-deactivate:hover {
         background: #dc2626;
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-redirect {
+        background: #d97706;
+        color: white !important;
+        text-decoration: none;
+        display: block; 
+        width: 100%;
+        box-sizing: border-box; 
+        text-align: center;
+    }
+
+    .btn-redirect:hover {
+        background: #b45309;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(217, 119, 6, 0.2);
     }
 </style>
 
@@ -118,7 +149,7 @@
             </div>
             <h2>Deactivate Ledger</h2>
             <p class="subtitle" style="color: #64748b; font-size: 0.9rem; margin-top: 10px;">
-                You are about to freeze this account. Once deactivated, it will no longer be visible in the active transfer list.
+                Identify and authorize the removal of this financial instrument from the active engine.
             </p>
         </div>
 
@@ -130,7 +161,9 @@
                 </div>
                 <div class="detail-item">
                     <label>Balance (INR)</label>
-                    <span style="color: #10b981;">₹{{ account.balance }}</span>
+                    <span style="color: {% if account.balance > 0 %}#ef4444{% else %}#10b981{% endif %};">
+                        ₹{{ account.balance }}
+                    </span>
                 </div>
                 <div class="detail-item" style="grid-column: span 2;">
                     <label>Account Number</label>
@@ -138,30 +171,42 @@
                 </div>
             </div>
 
-            
+            {% if account.balance == 0 %}
+                <div class="status-container ready-state">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <h4 style="color: #991b1b; margin: 0 0 10px 0; font-weight: 800;">Final Authorization</h4>
+                        <p style="font-size: 0.8rem; color: #b91c1c; margin-bottom: 20px; line-height: 1.5;">
+                            Account is cleared. Enter your primary password to execute the deactivation sequence and freeze this ledger.
+                        </p>
 
-            <form method="POST">
-                {% csrf_token %}
-                <div class="verification-section">
-                    <h4 style="color: #991b1b; margin: 0 0 10px 0; font-weight: 800;">Final Authorization</h4>
-                    <p style="font-size: 0.8rem; color: #b91c1c; margin-bottom: 20px; line-height: 1.5;">
-                        To confirm this permanent deactivation, please enter your password. This action will be logged with your IP address for security auditing.
+                        <div class="form-group">
+                            <label>Identity Confirmation (Password)</label>
+                            <input type="password" name="verify_password" required placeholder="••••••••">
+                        </div>
+
+                        <button type="submit" class="btn-action-main btn-deactivate">
+                            Sign & Deactivate Account
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="status-container blocked-state">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">🔒</div>
+                    <h4 style="color: #92400e; margin: 0 0 10px 0; font-weight: 800;">Active Liquidity Detected</h4>
+                    <p style="font-size: 0.85rem; color: #b45309; line-height: 1.6; margin-bottom: 25px; padding: 0 10px;">
+                        Standard banking protocols prohibit the closure of accounts with an active balance. Please transfer <strong>₹{{ account.balance }}</strong> to another account before proceeding.
                     </p>
-
-                    <div class="form-group">
-                        <label>Identity Confirmation (Password)</label>
-                        <input type="password" name="verify_password" required placeholder="••••••••">
-                    </div>
-
-                    <button type="submit" class="btn-danger-execute">
-                        Sign & Deactivate Account
-                    </button>
                     
-                    <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 20px; font-size: 0.85rem; color: #64748b; text-decoration: none; font-weight: 600;">
-                        ⟵ Cancel and Return
+                    <a href="{% url 'transfer' %}" class="btn-action-main btn-redirect">
+                        Transfer Remaining Funds
                     </a>
                 </div>
-            </form>
+            {% endif %}
+
+            <a href="{% url 'home' %}" style="display: block; text-align: center; margin-top: 25px; font-size: 0.85rem; color: #64748b; text-decoration: none; font-weight: 600;">
+                ⟵ Abort and Return to Dashboard
+            </a>
         </div>
     </div>
 </div>
