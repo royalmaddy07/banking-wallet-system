@@ -1,6 +1,6 @@
-# 💳 Banking Wallet System
+# 💳 BankEngine
 
-A backend-focused **digital banking wallet system** designed with an emphasis on **data integrity, transactional correctness, and system design principles**.  
+A backend-focused **digital BankEngine system** designed with an emphasis on **data integrity, transactional correctness, and system design principles**.  
 The project evolves from a standalone banking database design done in an earlier repo to a full backend service with authentication, business logic, and API-driven workflows.
 
 ---
