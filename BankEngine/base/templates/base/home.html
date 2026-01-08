@@ -306,11 +306,11 @@
         <div class="section-header">
             <h3>Your Managed Assets</h3>
             <div class="action-bar">
-                {% if accounts.count < 5 %}
+                {% if active_acc_count < 5 %}
                     <a href="{% url 'new_account' %}" class="btn-action">+ New Account</a>
                 {% else %}
                     <span class="btn-action" style="opacity: 0.5; cursor: not-allowed; border-color: #ef4444; color: #ef4444;" title="Maximum account limit reached">
-                    Limit Reached (5/5)
+                    🔒 Account Slots Full (5/5)
                     </span>
                 {% endif %}
                 <a href="{% url 'transfer' %}" class="btn-action">Transfer Funds</a>

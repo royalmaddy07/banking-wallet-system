@@ -87,13 +87,22 @@ def logout_user(request):
 # base/home page view :
 def home(request):
     accounts = Accounts.objects.filter(userid = request.user.users)
+    active_acc_count = accounts.filter(status = 'ACTIVE').count()
     context = {
-        'accounts' : accounts
+        'accounts' : accounts,
+        'active_acc_count' : active_acc_count,
     }
     return render(request, 'base/home.html', context)
 
 # view for opening new account ->
 def new_account(request):
+    # preventing new account creating if user has 5 accounts
+    account_count = Accounts.objects.filter(userid = request.user.users, status = 'ACTIVE').count()
+
+    if account_count>=5:
+        messages.error(request, "Provisioning Limit Reached: You may only manage up to 5 active ledgers.")
+        return redirect('home')
+
     if request.method == 'POST':
         verify_password = request.POST.get('verify_password')
         accType = request.POST.get('account_type')
