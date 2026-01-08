@@ -37,12 +37,6 @@
             border-color: #ef4444;
         }
 
-        /* Visual state for Inactive Accounts */
-        .account-card.inactive {
-            filter: grayscale(1) opacity(0.8);
-            background: #475569;
-        }
-
         .closed-badge {
             position: absolute;
             top: 30px;
@@ -56,7 +50,6 @@
             text-transform: uppercase;
         }
 
-        /* ... remaining existing styles ... */
         .profile-card {
             background: white;
             border-radius: 12px;
@@ -184,8 +177,20 @@
 
         .accounts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(4, 1fr); 
             gap: 25px;
+        }
+
+        @media (max-width: 1200px) {
+            .accounts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .account-card {
@@ -199,6 +204,29 @@
             justify-content: space-between;
             box-shadow: 0 15px 30px rgba(26, 54, 93, 0.15);
             position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .account-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(26, 54, 93, 0.3);
+        }
+
+        .account-card.inactive {
+            filter: grayscale(1) opacity(0.8);
+            background: #475569;
+        }
+
+        .card-savings {
+            background: linear-gradient(135deg, #065f46 0%, #10b981 100%) !important;
+        }
+
+        .card-current {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%) !important;
+        }
+
+        .card-investment {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%) !important;
         }
 
         .card-label {
@@ -246,20 +274,6 @@
         }
     </style>
 
-    {% if messages %}
-    <div class="messages-container">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {% if message.tags == 'success' %}
-                <span style="margin-left: 10px;">{{ message }} ✅</span>
-            {% else %}
-                <span style="margin-left: 10px;">{{ message }} ❌</span>
-            {% endif %}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
     <div class="dashboard-container">
         <h2 style="color: #1a365d; margin-bottom: 30px; font-weight: 800; letter-spacing: -1px;">
             System Dashboard / <span style="color: #3498db;">{{ request.user.users.name|upper }}</span>
@@ -289,18 +303,27 @@
     </div>
 
     <div class="dashboard-wrapper">
-    
         <div class="section-header">
             <h3>Your Managed Assets</h3>
             <div class="action-bar">
-                <a href="{% url 'new_account' %}" class="btn-action">+ New Account</a>
+                {% if accounts.count < 5 %}
+                    <a href="{% url 'new_account' %}" class="btn-action">+ New Account</a>
+                {% else %}
+                    <span class="btn-action" style="opacity: 0.5; cursor: not-allowed; border-color: #ef4444; color: #ef4444;" title="Maximum account limit reached">
+                    Limit Reached (5/5)
+                    </span>
+                {% endif %}
                 <a href="{% url 'transfer' %}" class="btn-action">Transfer Funds</a>
             </div>
         </div>
 
         <div class="accounts-grid">
             {% for acc in accounts %}
-            <div class="account-card {% if acc.status == 'INACTIVE' %}inactive{% endif %}">
+            <div class="account-card {% if acc.status == 'INACTIVE' %}inactive
+                                     {% elif acc.accounttype == 'SAVINGS' %}card-savings
+                                     {% elif acc.accounttype == 'CURRENT' %}card-current
+                                     {% elif acc.accounttype == 'INVESTMENT' %}card-investment
+                                     {% endif %}">
                 <span class="card-label">{{ acc.accounttype }}</span>
                 
                 {% if acc.status == 'INACTIVE' %}
@@ -338,17 +361,5 @@
         <div style="background: white; padding: 20px; border-radius: 15px; color: #94a3b8; text-align: center;">
             Transaction ledger is currently empty.
         </div>
-
     </div>
-
-<script>
-    setTimeout(function() {
-        let messages = document.querySelector('.messages-container');
-        if (messages) {
-            messages.style.transition = "opacity 0.5s ease";
-            messages.style.opacity = "0";
-            setTimeout(() => messages.remove(), 500);
-        }
-    }, 5000);
-</script>
 {% endblock %}

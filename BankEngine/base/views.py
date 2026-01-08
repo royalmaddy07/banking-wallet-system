@@ -119,7 +119,7 @@ def new_account(request):
                     createdate = timezone.now(),
                 )
 
-                messages.success(request, 'account created successfully!')
+                messages.success(request, 'Account created successfully!')
                 messages.success(request, f"Account {generated_acc_no} is now ACTIVE.")
                 return redirect('home')
         except Exception as e:
@@ -137,15 +137,25 @@ def statements(request):
 
 # view logic for deactivating a ledger ->
 def deactivate_account(request, pk):
-    account = Accounts.objects.get(accountid = pk)
+    account = Accounts.objects.get(accountid = pk, userid = request.user.users)
     context = {
         'account' : account
     }
+
     if request.method == "POST" :
         verify_password = request.POST.get('verify_password')
         if not request.user.check_password(verify_password):
             messages.error(request, "Incorrect Password!")
             return render(request, 'base/deactivate_account.html', context)
-
+        
+        # start a transaction to deactivate the account ->
+        try:
+            with transaction.atomic():
+                account.status = 'INACTIVE'
+                account.save()
+                messages.success(request, f"Ledger {account.accountnumber} Has Been Deactivated Successfully!")
+                return redirect('home')
+        except Exception as e:
+            messages.error(request, f'System Error : {str(e)}')
 
     return render(request, 'base/deactivate_account.html', context)
