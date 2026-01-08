@@ -59,6 +59,9 @@ def register_user(request):
 
 
 def login_user(request):
+    if request.user.is_authenticated:
+        return home(request)
+    
     if request.method == 'POST':
         u = request.POST.get('username')
         p = request.POST.get('password')
