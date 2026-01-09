@@ -14,9 +14,9 @@
             <select name="account_id" class="filter-select" onchange="this.form.submit()">
                 <option value="">All Accounts</option>
                 {% for acc in user_accounts %}
-                <option value="{{ acc.accountid }}" {% if request.GET.account_id == acc.accountid|stringformat:"s" %}selected{% endif %}>
-                    {{ acc.accounttype }} - {{ acc.accountnumber }}
-                </option>
+                    <option value="{{ acc.accountid }}" {% if request.GET.account_id == acc.accountid|stringformat:"s" %}selected{% endif %}>
+                        {{ acc.accounttype }} - {{ acc.accountnumber }}
+                    </option>
                 {% endfor %}
             </select>
         </form>

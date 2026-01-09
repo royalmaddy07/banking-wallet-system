@@ -171,4 +171,8 @@ def transfer(request):
 
 # view for retrieving bank statements ->
 def statements(request):
-    return render(request, 'base/statements.html')
+    user_accounts = Accounts.objects.filter(userid = request.user.users)
+    context = {
+        'user_accounts' : user_accounts
+    }
+    return render(request, 'base/statements.html', context)
