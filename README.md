@@ -17,4 +17,4 @@ The system was built in two phases:
 ---
 
 ## 🏗️ Architecture
-1. Standard Django based MVT architecture
+1. Full stack Monolith Architecture
