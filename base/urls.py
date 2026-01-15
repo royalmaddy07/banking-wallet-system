@@ -17,4 +17,10 @@ urlpatterns = [
     path('statements/', views.statements, name='statements'),
 
     path('deactivate_account/<int:pk>', views.deactivate_account, name='deactivate_account'),
+
+    path('beneficiaries/', views.beneficiaries, name='beneficiaries'),
+
+    path('fixed_deposits/', views.fixed_deposits, name="fixed-deposits"),
+
+    path('analytics/', views.analytics, name="analytics"),
 ]

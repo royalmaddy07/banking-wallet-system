@@ -1,0 +1,205 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    :root {
+        --bg-glass: rgba(255, 255, 255, 0.9);
+        --accent-blue: #3498db;
+        --accent-green: #10b981;
+        --accent-red: #ef4444;
+    }
+
+    .analytics-wrapper {
+        padding: 30px 50px;
+        max-width: 1500px;
+        margin: 0 auto;
+        background: #f8fafc;
+    }
+
+    /* Top Stats Row */
+    .metrics-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .metric-card span { font-size: 0.7rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
+    .metric-card h2 { margin: 8px 0; font-size: 1.5rem; color: #1a365d; }
+    .metric-trend { font-size: 0.75rem; font-weight: 700; }
+    .trend-up { color: #10b981; }
+    .trend-down { color: #ef4444; }
+
+    /* Main Grid */
+    .analytics-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .chart-header h3 { font-size: 0.9rem; color: #1a365d; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .chart-container { position: relative; height: 300px; }
+
+    .cashflow-legend {
+        display: flex;
+        gap: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* Recommendation Engine View */
+    .ai-insights {
+        margin-top: 30px;
+        background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        padding: 25px;
+        border-radius: 20px;
+        color: white;
+    }
+</style>
+
+<div class="analytics-wrapper">
+    <div class="metrics-row">
+        <div class="metric-card">
+            <span>Net Worth (Total Balance)</span>
+            <h2>₹{{ total_balance|default:"1,24,500" }}</h2>
+            <div class="metric-trend trend-up">▲ 4.2% from last month</div>
+        </div>
+        <div class="metric-card">
+            <span>Savings Rate</span>
+            <h2>{{ savings_rate|default:"28" }}%</h2>
+            <div class="metric-trend trend-up">▲ Healthy Liquidity</div>
+        </div>
+        <div class="metric-card">
+            <span>Monthly Burn</span>
+            <h2>₹{{ monthly_burn|default:"32,000" }}</h2>
+            <div class="metric-trend trend-down">▼ 2% decrease in bills</div>
+        </div>
+        <div class="metric-card">
+            <span>Active Ledgers</span>
+            <h2>{{ active_acc_count|default:"4" }}/5</h2>
+            <div class="metric-trend" style="color: #64748b;">Capacity optimized</div>
+        </div>
+    </div>
+
+    <div class="analytics-grid">
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Cash Flow Analysis</h3>
+                <div class="cashflow-legend">
+                    <span style="color: #3498db;">● Inflow</span>
+                    <span style="color: #ef4444;">● Outflow</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="cashflowChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Spending Segments</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-insights">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <span style="font-size: 1.5rem;">🤖</span>
+            <h3 style="margin: 0; font-size: 1.1rem;">Engine Intelligence Report</h3>
+        </div>
+        <p style="font-size: 0.9rem; opacity: 0.9; line-height: 1.6;">
+            Based on your transaction velocity in <strong>Lifestyle</strong>, you are projected to exceed your budget by ₹4,500 this month. We recommend moving ₹10,000 to your <strong>Savings Ledger</strong> now to maintain your 28% savings goal. 
+        </p>
+    </div>
+</div>
+
+<script>
+    // 1. Cash Flow Chart (Line Chart)
+    const flowCtx = document.getElementById('cashflowChart').getContext('2d');
+    new Chart(flowCtx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [
+                {
+                    label: 'Inflow',
+                    data: [20000, 5000, 15000, 8000],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Outflow',
+                    data: [12000, 8000, 6000, 14000],
+                    borderColor: '#ef4444',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+            }
+        }
+    });
+
+    // 2. Category Chart (Doughnut)
+    const catCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Food', 'Bills', 'Shopping', 'Investment', 'Other'],
+            datasets: [{
+                data: [15, 40, 20, 15, 10],
+                backgroundColor: ['#3498db', '#10b981', '#f1c40f', '#8b5cf6', '#94a3b8'],
+                hoverOffset: 15,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20 } }
+            },
+            cutout: '75%'
+        }
+    });
+</script>
+{% endblock %}

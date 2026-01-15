@@ -180,3 +180,13 @@ def statements(request):
         'user_accounts' : user_accounts
     }
     return render(request, 'base/statements.html', context)
+
+# view for add payees
+def beneficiaries(request):
+    return render(request, 'base/beneficiaries.html')
+
+def analytics(request):
+    return render(request, 'base/analytics.html')
+
+def fixed_deposits(request):
+    return render(request, 'base/fixed_deposits.html')
