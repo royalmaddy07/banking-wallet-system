@@ -1,4 +1,4 @@
-# 💳 BankEngine
+# BankEngine
 
 A backend-focused **digital BankEngine system** designed with an emphasis on **data integrity, transactional correctness, and system design principles**.  
 The project evolves from a standalone banking database design done in an earlier repo to a full backend service with authentication, business logic, and API-driven workflows.
@@ -16,5 +16,55 @@ The system was built in two phases:
 
 ---
 
-## 🏗️ Architecture
-1. Full stack Monolith Architecture
+# BankEngine | High-Integrity Core Banking Ledger
+
+BankEngine is a robust, full-stack financial system designed to manage multi-tier ledgers with strict **ACID compliance**. Built with Python and Django, the system prioritizes transactional integrity and server-side security over client-side fluff.
+
+
+
+## 🚀 Core Backend Features
+
+* **Transactional Integrity (ACID):** Utilizes Django's `transaction.atomic` blocks to ensure that fund transfers either complete entirely or roll back fully, preventing data corruption or "phantom" money.
+* **Ledger Provisioning:** Dynamic creation of different financial instruments (Savings, Current, Investment) with independent liquidity tracking.
+* **Security Protocols:** Implements identity re-verification for high-risk operations (ledger termination/deactivation) and strict server-side validation to prevent overdrafts.
+* **System Design:** Normalized relational database schema designed for high-cardinality relationships between users, accounts, and immutable transaction logs.
+* **Real-time Monitoring:** A hardware-accelerated dashboard utilizing the **Intersection Observer API** for efficient data visualization.
+
+
+## 🛠️ Tech Stack
+
+* **Language:** Python 3.10+
+* **Framework:** Django 4.x (Monolithic Architecture)
+* **Database:** PostgreSQL (Production) / SQLite (Development)
+* **Frontend:** Modular CSS3, Vanilla JavaScript (ES6+), Django Templates
+
+## 🔧 System Design & Logic
+
+### Concurrency Control
+To prevent "Double Spending" or race conditions during high-volume transfers, the engine is designed to handle row-level locking. This ensures that while one transaction is updating a balance, others must wait for the lock to release.
+
+### Account State Machine
+Ledgers follow a strict state flow:
+1.  **PROVISIONED:** Account is active and can receive/send funds.
+2.  **BLOCKED:** System-triggered state when active liquidity is detected during a termination request.
+3.  **TERMINATED:** Permanent deactivation; the node is frozen in the database for audit purposes but removed from the active engine.
+
+## 🚦 Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/BankEngine.git](https://github.com/yourusername/BankEngine.git)
+
+2. **Setup Virtual Enviroument**
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+3. **Install Dependencies**
+    pip install -r requirements.txt
+
+5. **Make Database Migrations**
+    python manage.py makemigrations
+    python manage.py migrate
+
+4. **Run Server**
+    python manage.py runserver
