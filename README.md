@@ -1,4 +1,4 @@
-# BankEngine
+# BankEngine | High-Integrity Core Banking Ledger
 
 A backend-focused **digital BankEngine system** designed with an emphasis on **data integrity, transactional correctness, and system design principles**.  
 The project evolves from a standalone banking database design done in an earlier repo to a full backend service with authentication, business logic, and API-driven workflows.
@@ -15,8 +15,6 @@ The system was built in two phases:
 2. **Backend Integration** – Django-based service layer on top of the schema
 
 ---
-
-# BankEngine | High-Integrity Core Banking Ledger
 
 BankEngine is a robust, full-stack financial system designed to manage multi-tier ledgers with strict **ACID compliance**. Built with Python and Django, the system prioritizes transactional integrity and server-side security over client-side fluff.
 
